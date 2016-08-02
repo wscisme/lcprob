@@ -7,11 +7,14 @@ vector<int*> all_permutes;
 
 void findPermutation(int permute[], int j, int coltaken, int sums, int difs) {
   if (j == 8) {
-    all_permutes.push_back(permute);
+    int* goodpermute = new int[8];
+    for (int i = 0; i < 8; ++i) goodpermute[i] = permute[i];
+    all_permutes.push_back(goodpermute);
     return;
   }
 
-  for (int k = 0; k < 8; ++k) {
+  for (int k = 0; k < 9; ++k) {
+    if (k == 8) return;
     if (coltaken & 1 << k) continue;
     if (sums & 1 << j << k) continue;
     if (difs & 1 << 7 << j >> k) continue;
@@ -34,7 +37,11 @@ int main()
 
   findPermutation(permute, 0, coltaken, sums, difs);
 
-  cout << all_permutes.size() << endl;
+  cout << "Total possibilities are: " << all_permutes.size() << endl;
+  for (unsigned i = 0; i < 8; ++i) {
+    cout << all_permutes[0][i] << " ";
+  }
+  cout << endl;
 
   return 0;
 }
