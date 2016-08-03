@@ -8,23 +8,17 @@ using namespace std;
 class Solution {
  public:
   vector< vector<string> > solveNQueens(int n);
-  bool findPermutation(int* permute, const int n, int j, int* coltaken, int* sums, int* difs);
- private:
-  vector<int*> all_permutes;
-  vector<int*> unique_permutes;
 };
 
 vector< vector<string> > Solution::solveNQueens(int n) {
   vector< vector<string> > solutions;
-  if (n < 1) {
-    cout << "Invalid value. Please input with N > 0." << endl;
-    return solutions;
-  } else if (n == 1) {
-    solutions.push_back(vector<string>{"Q"});
-  } else if (n < 4) {
+  if (n < 4) {
+    if (n < 1) cout << "Invalid value. Please input with N > 0." << endl;
+    else if (n == 1) solutions.push_back(vector<string>{"Q"});
     return solutions;
   }
 
+  vector<int*> all_permutes;
   int permute[n];
   int sums[n];
   int difs[n];
@@ -83,10 +77,14 @@ int main()
 
   Solution s;
   vector< vector<string> > solution;
-  solution = s.solveNQueens(8);
-
-  cout << "The total posibilities for n = " << 8 << " is: " << solution.size() << endl;
-  for (int i = 0; i < 8; ++i) cout << solution[0][i] << endl;
+  for (int n = 0; n < 7; ++n) {
+    solution = s.solveNQueens(n);
+    cout << "The total posibilities for n = " << n << " is: " << solution.size() << endl;
+    for (auto it = solution.begin(); it != solution.end(); ++it) {
+      for (int i = 0; i < n; ++i) cout << (*it)[i] << endl;
+      cout << "------------------\n";
+    }
+  }
 
   return 0;
 }
