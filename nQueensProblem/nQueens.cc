@@ -18,6 +18,7 @@ vector< vector<string> > Solution::solveNQueens(int n) {
     return solutions;
   }
 
+  int half = (n+1)/2;
   vector<int*> all_permutes;
   int permute[n];
   int sums[n];
@@ -25,7 +26,7 @@ vector< vector<string> > Solution::solveNQueens(int n) {
 
   int row = 0;
   int col = 0;
-  while (true) {
+  while (row > 0 || col < half) {
     if (col == n) {
       --row;
       if (row < 0) break;
@@ -61,6 +62,14 @@ vector< vector<string> > Solution::solveNQueens(int n) {
     vector<string> sol;
     for (int i = 0; i < n; ++i)
       sol.push_back(string(rowtemplate).replace((*it)[i], 1, "Q"));
+    solutions.push_back(sol);
+  }
+
+  for (auto it = all_permutes.rbegin(); it != all_permutes.rend(); ++it) {
+    vector<string> sol;
+    if (n%2 && (*it)[0] == half - 1) continue;
+    for (int i = 0; i < n; ++i)
+      sol.push_back(string(rowtemplate).replace((n - 1 - (*it)[i]), 1, "Q"));
     solutions.push_back(sol);
   }
 
