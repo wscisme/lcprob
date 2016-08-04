@@ -8,6 +8,7 @@ using namespace std;
 class Solution {
  public:
   vector< vector<string> > solveNQueens(int n);
+  int totalNQueens(int n);
 };
 
 vector< vector<string> > Solution::solveNQueens(int n) {
@@ -47,7 +48,7 @@ vector< vector<string> > Solution::solveNQueens(int n) {
     difs[row] = dif;
     ++row;
     col = 0;
-      
+
     if (row == n) {
       int* goodpermute = new int[n];
       for (int k = 0; k < n; ++k) goodpermute[k] = permute[k];
@@ -76,6 +77,59 @@ vector< vector<string> > Solution::solveNQueens(int n) {
   return solutions;
 }
 
+int Solution::totalNQueens(int n) {
+  if (n < 4) {
+    if (n < 1) cout << "Invalid value. Please input with N > 0." << endl;
+    else if (n == 1) return 1;
+    return 0;
+  }
+
+  bool isOdd = n%2;
+  int half = (n+1)/2;
+  int solution{0};
+  int duplicate{0};
+  int permute[n];
+  int sums[n];
+  int difs[n];
+
+  int row = 0;
+  int col = 0;
+  while (row > 0 || col < half) {
+    if (col == n) {
+      --row;
+      if (row < 0) break;
+      col = permute[row] + 1;
+      continue;
+    }
+    int sum = row + col;
+    int dif = row - col;
+    bool trynext = false;
+    for (int j = 0; j < row; ++j) {
+      trynext = (permute[j] == col || (sums[j] == sum) || (difs[j] == dif));
+      if (trynext) break;
+    }
+    if (trynext) { ++col; continue; }
+
+    permute[row] = col;
+    sums[row] = sum;
+    difs[row] = dif;
+    ++row;
+    col = 0;
+
+    if (row == n) {
+      solution++;
+      if (isOdd && permute[0] == half - 1)
+        duplicate++;
+      row -= 2;
+      col = permute[row] + 1;
+    }
+  }
+
+  solution = solution + solution - duplicate;
+
+  return solution;
+}
+
 int main()
 {
   int permute[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -89,10 +143,11 @@ int main()
   for (int n = 0; n < 7; ++n) {
     solution = s.solveNQueens(n);
     cout << "The total posibilities for n = " << n << " is: " << solution.size() << endl;
-    for (auto it = solution.begin(); it != solution.end(); ++it) {
-      for (int i = 0; i < n; ++i) cout << (*it)[i] << endl;
-      cout << "------------------\n";
-    }
+    cout << "and the number only program says: " << s.totalNQueens(n) << endl;
+    // for (auto it = solution.begin(); it != solution.end(); ++it) {
+    //   for (int i = 0; i < n; ++i) cout << (*it)[i] << endl;
+    //   cout << "------------------\n";
+    // }
   }
 
   return 0;
