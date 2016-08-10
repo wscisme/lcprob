@@ -19,9 +19,6 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
   int candrow[9];               // possible candidates for the row as binary pos
   int candcol[9];
   int candblk[9];
-  int ncandrow[9];              // number of candidates for each row
-  int ncandcol[9];
-  int ncandblk[9];
 
   std::fill_n(candrow, 9, ALLNUM);
   std::fill_n(candcol, 9, ALLNUM);
@@ -55,11 +52,9 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
       (*it)[4] = (std::bitset<10>((*it)[3])).count();
     }
     std::sort(emptycells.begin(), emptycells.end(), sortByCount);
-    // cout << "A sorting is done." << endl;
 
     bool update_cells = false;
     for (auto it = emptycells.begin(); it != emptycells.end(); ++it) {
-      // cout << "At " << (*it)[0] << " " << (*it)[1] << " with (*it)[4] = " << (*it)[4] << endl;
       if ((*it)[4] == 1) {
         update_cells = true;
         int num = 1;
@@ -107,7 +102,6 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
         break;
       }
       else if (update_cells) {
-        // cout << "Updating cells!\n";
         break;
       }
       else {
@@ -122,7 +116,6 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
         (*it)[3] ^= (*it)[4];                  // take out the possiblity for next time
         poped_at_trial.push_back(*it);
         emptycells.erase(it);
-        // cout << "Updating cells!\n";
         break;
       }
     }
