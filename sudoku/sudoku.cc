@@ -65,9 +65,9 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
         int num = 1;
         while (!((*it)[3] & (1 << num))) ++num;
         board[(*it)[0]][(*it)[1]] = num + '0';
-        // if (!(candrow[(*it)[0]] & (*it)[3])) cout << "Bug here: " << __LINE__ << endl;
-        // if (!(candcol[(*it)[1]] & (*it)[3])) cout << "Bug here: " << __LINE__ << endl;
-        // if (!(candblk[(*it)[2]] & (*it)[3])) cout << "Bug here: " << __LINE__ << endl;
+        if (!(candrow[(*it)[0]] & (*it)[3]) ||
+            !(candcol[(*it)[1]] & (*it)[3]) ||
+            !(candblk[(*it)[2]] & (*it)[3])) break;
         candrow[(*it)[0]] ^= (*it)[3];
         candcol[(*it)[1]] ^= (*it)[3];
         candblk[(*it)[2]] ^= (*it)[3];
@@ -75,14 +75,8 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
         emptycells.erase(it--);
       }
       else if ((*it)[4] == 0) {
-        // cout << "This trial is damned, going back!" << endl;
-        // cout << "Trial size: " << poped_at_trial.size() << endl;
         for (auto rit = poped_at_trial.rbegin(); rit != poped_at_trial.rend(); ) {
           if ((*rit)[4] == 1) {
-            // cout << "The size of poped_at_trial is: " << poped_at_trial.size() << endl;
-            // if (candrow[(*rit)[0]] & (*rit)[3]) cout << "Bug here: " << __LINE__ << endl;
-            // if (candcol[(*rit)[1]] & (*rit)[3]) cout << "Bug here: " << __LINE__ << endl;
-            // if (candblk[(*rit)[2]] & (*rit)[3]) cout << "Bug here: " << __LINE__ << endl;
             candrow[(*rit)[0]] ^= (*rit)[3];
             candcol[(*rit)[1]] ^= (*rit)[3];
             candblk[(*rit)[2]] ^= (*rit)[3];
@@ -91,9 +85,6 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
             rit = poped_at_trial.rbegin();
             continue;
           } else {
-            // if (candrow[(*rit)[0]] & (*rit)[4]) cout << "Bug here: " << __LINE__ << endl;
-            // if (candcol[(*rit)[1]] & (*rit)[4]) cout << "Bug here: " << __LINE__ << endl;
-            // if (candblk[(*rit)[2]] & (*rit)[4]) cout << "Bug here: " << __LINE__ << endl;
             candrow[(*rit)[0]] ^= (*rit)[4];
             candcol[(*rit)[1]] ^= (*rit)[4];
             candblk[(*rit)[2]] ^= (*rit)[4];
@@ -113,7 +104,6 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
           }
         }
         if (poped_at_trial.size() == 0) under_trial = false;
-        if (poped_at_trial.size() == 0) return;
         break;
       }
       else if (update_cells) {
@@ -169,6 +159,17 @@ int main()
   board2.push_back(vector<char>{'.','.','.', '.','.','.', '.','.','6'});
   board2.push_back(vector<char>{'.','.','.', '2','7','5', '9','.','.'});
 
+  vector<vector<char>> board3;
+  board3.push_back(vector<char>{'.','.','.', '2','.','.', '.','6','3'});
+  board3.push_back(vector<char>{'3','.','.', '.','.','5', '4','.','1'});
+  board3.push_back(vector<char>{'.','.','1', '.','.','3', '9','8','.'});
+  board3.push_back(vector<char>{'.','.','.', '.','.','.', '.','9','.'});
+  board3.push_back(vector<char>{'.','.','.', '5','3','8', '.','.','.'});
+  board3.push_back(vector<char>{'.','3','.', '.','.','.', '.','.','.'});
+  board3.push_back(vector<char>{'.','2','6', '3','.','.', '5','.','.'});
+  board3.push_back(vector<char>{'5','.','3', '7','.','.', '.','.','8'});
+  board3.push_back(vector<char>{'4','7','.', '.','.','1', '.','.','.'});
+
   int n = 6^3;
   int* a = new int[9];
   int* b = new int[9];
@@ -212,6 +213,14 @@ int main()
   for (int i = 0; i < 9; ++i) {
     for (int j = 0; j < 9; ++j)
       cout << board2[i][j] << ' ';
+    cout << endl;
+  }
+
+  cout << "The solution for board 3 is: " << endl;
+  sol.solveSudoku(board3);
+  for (int i = 0; i < 9; ++i) {
+    for (int j = 0; j < 9; ++j)
+      cout << board3[i][j] << ' ';
     cout << endl;
   }
 
