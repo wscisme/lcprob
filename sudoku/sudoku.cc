@@ -48,7 +48,7 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
     }
   }
 
-  bool is_trial = false;
+  bool under_trial = false;
   do {
     for (auto it = emptycells.begin(); it != emptycells.end(); ++it) {
       (*it)[3] = candrow[(*it)[0]] & candcol[(*it)[1]] & candblk[(*it)[2]];
@@ -59,61 +59,80 @@ void Solution::solveSudoku(vector<vector<char>>& board) {
 
     bool update_cells = false;
     for (auto it = emptycells.begin(); it != emptycells.end(); ++it) {
-      cout << "At " << (*it)[0] << " " << (*it)[1] << " with (*it)[4] = " << (*it)[4] << endl;
+      // cout << "At " << (*it)[0] << " " << (*it)[1] << " with (*it)[4] = " << (*it)[4] << endl;
       if ((*it)[4] == 1) {
         update_cells = true;
         int num = 1;
         while (!((*it)[3] & (1 << num))) ++num;
         board[(*it)[0]][(*it)[1]] = num + '0';
+        // if (!(candrow[(*it)[0]] & (*it)[3])) cout << "Bug here: " << __LINE__ << endl;
+        // if (!(candcol[(*it)[1]] & (*it)[3])) cout << "Bug here: " << __LINE__ << endl;
+        // if (!(candblk[(*it)[2]] & (*it)[3])) cout << "Bug here: " << __LINE__ << endl;
         candrow[(*it)[0]] ^= (*it)[3];
         candcol[(*it)[1]] ^= (*it)[3];
         candblk[(*it)[2]] ^= (*it)[3];
-        if (is_trial) poped_at_trial.push_back(*it);
-        else delete [] (*it);
+        if (under_trial) poped_at_trial.push_back(*it);
         emptycells.erase(it--);
       }
       else if ((*it)[4] == 0) {
-        cout << "This trial is damned, going back!" << endl;
-        cout << "Trial size: " << poped_at_trial.size() << endl;
-        for (auto rit = poped_at_trial.rbegin(); rit != poped_at_trial.rend(); ++rit) {
+        // cout << "This trial is damned, going back!" << endl;
+        // cout << "Trial size: " << poped_at_trial.size() << endl;
+        for (auto rit = poped_at_trial.rbegin(); rit != poped_at_trial.rend(); ) {
           if ((*rit)[4] == 1) {
-            emptycells.insert(emptycells.begin(), (*rit));
+            // cout << "The size of poped_at_trial is: " << poped_at_trial.size() << endl;
+            // if (candrow[(*rit)[0]] & (*rit)[3]) cout << "Bug here: " << __LINE__ << endl;
+            // if (candcol[(*rit)[1]] & (*rit)[3]) cout << "Bug here: " << __LINE__ << endl;
+            // if (candblk[(*rit)[2]] & (*rit)[3]) cout << "Bug here: " << __LINE__ << endl;
             candrow[(*rit)[0]] ^= (*rit)[3];
             candcol[(*rit)[1]] ^= (*rit)[3];
             candblk[(*rit)[2]] ^= (*rit)[3];
-            poped_at_trial.pop_back();
-            rit = poped_at_trial.rbegin();
-          } else {
-            candrow[(*rit)[0]] ^= (*rit)[4];
-            candcol[(*rit)[1]] ^= (*rit)[4];
-            candblk[(*rit)[2]] ^= (*rit)[4];
-            (*rit)[4] = (std::bitset<11>((*rit)[3])).count();
             emptycells.insert(emptycells.begin(), (*rit));
             poped_at_trial.pop_back();
             rit = poped_at_trial.rbegin();
+            continue;
+          } else {
+            // if (candrow[(*rit)[0]] & (*rit)[4]) cout << "Bug here: " << __LINE__ << endl;
+            // if (candcol[(*rit)[1]] & (*rit)[4]) cout << "Bug here: " << __LINE__ << endl;
+            // if (candblk[(*rit)[2]] & (*rit)[4]) cout << "Bug here: " << __LINE__ << endl;
+            candrow[(*rit)[0]] ^= (*rit)[4];
+            candcol[(*rit)[1]] ^= (*rit)[4];
+            candblk[(*rit)[2]] ^= (*rit)[4];
+            int num = 1;
+            while (!((*rit)[3] & (1 << num))) ++num;
+            board[(*rit)[0]][(*rit)[1]] = num + '0'; // take the first available for trial
+            (*rit)[4] = (1 << num);                  // use the count to store testing number
+            candrow[(*rit)[0]] ^= (*rit)[4];
+            candcol[(*rit)[1]] ^= (*rit)[4];
+            candblk[(*rit)[2]] ^= (*rit)[4];
+            (*rit)[4] = (std::bitset<10>((*rit)[3])).count();
+            if ((*rit)[4] > 1) {
+              (*rit)[3] ^= (*rit)[4];
+              (*rit)[4] = 1 << num;
+            }
             break;
           }
         }
-        if (poped_at_trial.size() == 0) is_trial = false;
+        if (poped_at_trial.size() == 0) under_trial = false;
+        if (poped_at_trial.size() == 0) return;
         break;
       }
       else if (update_cells) {
-        cout << "Updating cells!\n";
+        // cout << "Updating cells!\n";
         break;
       }
       else {
-        is_trial = true;
+        under_trial = true;
         int num = 1;
         while (!((*it)[3] & (1 << num))) ++num;
-        board[(*it)[0]][(*it)[1]] = num + '0';
-        (*it)[4] = (1 << num);  // use the count to store test number
+        board[(*it)[0]][(*it)[1]] = num + '0'; // take the first available for trial
+        (*it)[4] = (1 << num);                 // use the count to store testing number
         candrow[(*it)[0]] ^= (*it)[4];
         candcol[(*it)[1]] ^= (*it)[4];
         candblk[(*it)[2]] ^= (*it)[4];
-        (*it)[3] ^= (*it)[4];
+        (*it)[3] ^= (*it)[4];                  // take out the possiblity for next time
         poped_at_trial.push_back(*it);
-        emptycells.erase(it--);
-        cout << "Updating cells!\n";
+        emptycells.erase(it);
+        // cout << "Updating cells!\n";
         break;
       }
     }
@@ -180,13 +199,13 @@ int main()
   
   Solution sol;
 
-  // cout << "The solution for board 1 is: " << endl;
-  // sol.solveSudoku(board1);
-  // for (int i = 0; i < 9; ++i) {
-  //   for (int j = 0; j < 9; ++j)
-  //     cout << board1[i][j] << ' ';
-  //   cout << endl;
-  // }
+  cout << "The solution for board 1 is: " << endl;
+  sol.solveSudoku(board1);
+  for (int i = 0; i < 9; ++i) {
+    for (int j = 0; j < 9; ++j)
+      cout << board1[i][j] << ' ';
+    cout << endl;
+  }
 
   cout << "The solution for board 2 is: " << endl;
   sol.solveSudoku(board2);
