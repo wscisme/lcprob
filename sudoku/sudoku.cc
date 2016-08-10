@@ -6,11 +6,38 @@ using namespace std;
 
 class Solution {
  public:
+  bool isValidSudoku(vector<vector<char>>& board);
   void solveSudoku(vector<vector<char>>& board);
 };
 
 inline int blkpos(int i, int j) { return (i/3)*3 + (j/3); }
 inline bool sortByCount(int* a, int* b) { return a[4] < b[4]; }
+
+bool Solution::isValidSudoku(vector<vector<char>>& board) {
+  int candrow[9];
+  int candcol[9];
+  int candblk[9];
+  std::fill_n(candrow, 9, 0);
+  std::fill_n(candcol, 9, 0);
+  std::fill_n(candblk, 9, 0);
+
+  // scan the board to narrow down the candidates
+  for (int i = 0; i < 9; ++i) {
+    for (int j = 0; j < 9; ++j) {
+      if (board[i][j] != '.') {
+        int thisnum = 1 << (board[i][j] - '0'); // binary rep for the number
+        if (candrow[i] & thisnum ||
+            candcol[j] & thisnum ||
+            candblk[blkpos(i, j)] & thisnum)
+          return false;
+        candrow[i] ^= thisnum;
+        candcol[j] ^= thisnum;
+        candblk[blkpos(i, j)] ^= thisnum;
+      }
+    }
+  }
+  return true;
+}
 
 void Solution::solveSudoku(vector<vector<char>>& board) {
 
@@ -190,7 +217,7 @@ int main()
     // it = cellbyrow[1].begin();
   }
   cout << "This works: " << cellbyrow[0].size() << " " << cellbyrow[1].size() << endl << endl;
-  
+
   Solution sol;
 
   cout << "The solution for board 1 is: " << endl;
@@ -216,6 +243,11 @@ int main()
       cout << board3[i][j] << ' ';
     cout << endl;
   }
+
+  cout << "This should be an easy question:" << endl << boolalpha
+       << "board1 is " << sol.isValidSudoku(board1) << endl
+       << "board2 is " << sol.isValidSudoku(board2) << endl
+       << "board3 is " << sol.isValidSudoku(board3) << endl;
 
   return 0;
 }
