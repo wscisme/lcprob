@@ -7,7 +7,9 @@ using namespace std;
 
 class Solution {
  public:
+  // https://leetcode.com/problems/n-queens/
   vector< vector<string> > solveNQueens(int n);
+  // https://leetcode.com/problems/n-queens-ii/
   int totalNQueens(int n);
 };
 

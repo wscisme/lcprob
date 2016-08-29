@@ -6,8 +6,10 @@ using namespace std;
 
 class Solution {
  public:
-  bool isValidSudoku(vector<vector<char>>& board);
+  // https://leetcode.com/problems/sudoku-solver/
   void solveSudoku(vector<vector<char>>& board);
+  // https://leetcode.com/problems/valid-sudoku/
+  bool isValidSudoku(vector<vector<char>>& board);
 };
 
 inline int blkpos(int i, int j) { return (i/3)*3 + (j/3); }
