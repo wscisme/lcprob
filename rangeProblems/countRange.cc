@@ -23,16 +23,16 @@ void mergeCountSort(vector<pair<int,int>>& array, vector<int>& sol) {
   mergeCountSort(halfarr2, sol);
   array.clear();
 
+  int count = 0;
   for (auto it1 = halfarr1.begin(), it2 = halfarr2.begin(), iend1 = halfarr1.end(), iend2 = halfarr2.end(); ;) {
     if (it1 == iend1) {
       if (it2 == iend2) break;
       array.push_back(*it2++);
-    }
-    else if (it2 == iend2 || it1->first > it2->first)
+    } else if (it2 == iend2 || it1->first > it2->first) {
+      sol[it1->second] -= count;
       array.push_back(*it1++);
-    else {
-      for (auto itemp = it1; itemp != iend1; ++itemp)
-        --sol[itemp->second];
+    } else {
+      ++count;
       array.push_back(*it2++);
     }
   }
