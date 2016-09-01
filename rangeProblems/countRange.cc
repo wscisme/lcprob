@@ -72,35 +72,42 @@ vector<int> Solution::countSmaller(vector<int>& nums) {
   return sol;
 }
 
-inline void mergeSortCountRangeSum(int larr[], int rarr[], int arrsize) {
-
+inline void mergeRangeSums(long int* sums, int i, int j, int k) {
+  long int* it = sums;
+  // for (long int* s)
 }
 
-int countSubarraySumInRange(vector<int>& nums, int lower, int upper, int j, int k) {
+int countSubarraySumInRange(vector<int>& nums, int lower, int upper, long int* sums, int j, int k) {
   if (j == k) return 0;
   int arrsize = k - j;
   if (arrsize == 1) return nums[j] >= lower && nums[j] <= upper;
   int half = (j + k) / 2;
-  int sum = countSubarraySumInRange(nums, lower, upper, j, half) + countSubarraySumInRange(nums, lower, upper, half, k);
+  int sum = countSubarraySumInRange(nums, lower, upper, sums, j, half) + countSubarraySumInRange(nums, lower, upper, sums, half, k);
   if (arrsize == 2) {
     int tempsum = nums[j] + nums[j+1];
     sum += (tempsum >= lower && tempsum <= upper);
+    if (nums[j] > tempsum) {
+      sums[j] = tempsum;
+      sums[j+1] = nums[j];
+    } else {
+      sums[j] = nums[j];
+      sums[j+1] = tempsum;
+    }
     return sum;
   }
 
   int lsize = half - j;
   int rsize = k - half;
-  long int larr[rsize];
-  long int rarr[rsize];
-  long int tempsum = 0;
+  long int larr[lsize];
+  // long int rarr[rsize];
+  long int* rarr = sums + half;
+  long int larrsum = 0;
   for (int i = half - 1, s = 0; i >= j; --i, ++s) {
-    tempsum += nums[i];
-    larr[s] = -tempsum;
+    larrsum += nums[i];
+    larr[s] = -larrsum;
   }
-  tempsum = 0;
-  for (int i = half, r = 0; i < k; ++i, ++r) {
-    tempsum += nums[i];
-    rarr[r] = tempsum;
+  for (int i = half; i < k; ++i) {
+    sums[r] += larrsum;
   }
 
   std::sort(larr, larr + lsize);
@@ -134,7 +141,8 @@ int countSubarraySumInRange(vector<int>& nums, int lower, int upper, int j, int 
 }
 
 int Solution::countRangeSum(vector<int>& nums, int lower, int upper) {
-  return countSubarraySumInRange(nums, lower, upper, 0, nums.size());
+  long int sums[nums.size()];
+  return countSubarraySumInRange(nums, lower, upper, sums, 0, nums.size());
 }
 
 
