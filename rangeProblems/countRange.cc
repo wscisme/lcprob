@@ -72,46 +72,61 @@ vector<int> Solution::countSmaller(vector<int>& nums) {
   return sol;
 }
 
-inline void mergeRangeSums(long int* sums, int i, int j, int k) {
-  long int* it = sums;
-  // for (long int* s)
+inline void mergeRangeSums(long int* ibegin, int nsize, long int firsthalf) {
+  int nhalf = nsize >> 1;
+  long int* ihalf = ibegin + nhalf;
+  long int* iend = ibegin + nsize;
+  long int lsums[nhalf];
+  for (auto it = ibegin, itemp = lsums; it != ihalf; ++it, ++itemp)
+    *itemp = *it;
+  for (auto it = ihalf; it != iend; ++it)
+    *it += firsthalf;
+  for (auto itl = lsums, ilend = lsums + nhalf, itr = ihalf, itsum = ibegin; itl != ilend; ++itsum) {
+    if (*itl <= *itr) {
+      *itsum = *itl;
+      ++itl;
+    } else {
+      *itsum = *itr;
+      ++itr;
+    }
+  }
 }
 
-int countSubarraySumInRange(vector<int>& nums, int lower, int upper, long int* sums, int j, int k) {
+long int countSubarraySumInRange(vector<int>& nums, int lower, int upper, long int* sums, int j, int k, int& result) {
   if (j == k) return 0;
   int arrsize = k - j;
-  if (arrsize == 1) return nums[j] >= lower && nums[j] <= upper;
+  if (arrsize == 1) {
+    result += nums[j] >= lower && nums[j] <= upper;
+    sums[j] = nums[j];
+    return nums[j];
+  }
   int half = (j + k) / 2;
-  int sum = countSubarraySumInRange(nums, lower, upper, sums, j, half) + countSubarraySumInRange(nums, lower, upper, sums, half, k);
+  int larrsum = countSubarraySumInRange(nums, lower, upper, sums, j, half, result);
+  int rarrsum = countSubarraySumInRange(nums, lower, upper, sums, half, k, result);
   if (arrsize == 2) {
-    int tempsum = nums[j] + nums[j+1];
-    sum += (tempsum >= lower && tempsum <= upper);
-    if (nums[j] > tempsum) {
-      sums[j] = tempsum;
+    int arrsum = nums[j] + nums[j+1];
+    result += (arrsum >= lower && arrsum <= upper);
+    if (nums[j] > arrsum) {
+      sums[j] = arrsum;
       sums[j+1] = nums[j];
     } else {
       sums[j] = nums[j];
-      sums[j+1] = tempsum;
+      sums[j+1] = arrsum;
     }
-    return sum;
+    return arrsum;
   }
 
   int lsize = half - j;
   int rsize = k - half;
   long int larr[lsize];
-  // long int rarr[rsize];
   long int* rarr = sums + half;
-  long int larrsum = 0;
+  long int lsum = 0;
   for (int i = half - 1, s = 0; i >= j; --i, ++s) {
-    larrsum += nums[i];
-    larr[s] = -larrsum;
-  }
-  for (int i = half; i < k; ++i) {
-    sums[r] += larrsum;
+    lsum += nums[i];
+    larr[s] = -lsum;
   }
 
   std::sort(larr, larr + lsize);
-  std::sort(rarr, rarr + rsize);
   long int loarr[lsize];
   long int uparr[lsize];
   for (int i = 0; i < lsize; ++i) {
@@ -137,12 +152,16 @@ int countSubarraySumInRange(vector<int>& nums, int lower, int upper, long int* s
     }
   }
 
-  return sum + count;
+  mergeRangeSums(sums + j, arrsize, larrsum);
+  result += count;
+  return larrsum + rarrsum;
 }
 
 int Solution::countRangeSum(vector<int>& nums, int lower, int upper) {
   long int sums[nums.size()];
-  return countSubarraySumInRange(nums, lower, upper, sums, 0, nums.size());
+  int result{0};
+  countSubarraySumInRange(nums, lower, upper, sums, 0, nums.size(), result);
+  return result;
 }
 
 
@@ -153,7 +172,7 @@ int main()
   vector<int> nums1 = {-2, 5, -1};
   vector<int> nums2 = {-3, 1, 2, -2, 2, -1};
   // vector<int> nums = {5, 7, 4, 6, 3, 3, 4, 2};
-  // vector<int> nums = {2147483647, -2147483648, -1, 0};
+  vector<int> nums3 = {2147483647, -2147483648, -1, 0};
 
   Solution sol;
   // vector<int> result = sol.countSmaller(nums);
@@ -163,6 +182,7 @@ int main()
 
   cout << "The result for range sum is: " << sol.countRangeSum(nums1, -2, 2) << endl;
   cout << "The result for range sum is: " << sol.countRangeSum(nums2, -3, -1) << endl;
+  cout << "The result for range sum is: " << sol.countRangeSum(nums3, -2, 0) << endl;
 
   return 0;
 }
