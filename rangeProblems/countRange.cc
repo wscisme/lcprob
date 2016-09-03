@@ -39,24 +39,6 @@ void mergeCountSort(vector<pair<int,int>>& array, vector<int>& sol) {
   }
 }
 
-/*
-void mergeCountSort2(int idxarr[], int lo, int hi, vector<int>& nums, vector<int>& sol) {
-  int arrsize = hi - lo;
-  if (arrsize < 2) return;
-
-  int half = arrsize/2;
-  mergeCountSort2(idxarr, lo, half, nums, sol);
-  mergeCountSort2(idxarr, half, hi, nums, sol);
-
-  // for (auto it1 = halfarr1.begin(), it2 = halfarr2.begin(), iend1 = halfarr1.end(), iend2 = halfarr2.end(); ;) {
-  for (int i = lo, j = half; ;) {
-    if (i == half) {
-      if (j == hi) break;
-    }
-  }
-}
-*/
-
 vector<int> Solution::countSmaller(vector<int>& nums) {
   const unsigned int nsize = nums.size();
   vector<int> sol(nsize);
@@ -155,6 +137,7 @@ inline int* mergeRangeSums(int* arr1, int size1, int* arr2, int size2, int arrsu
   return array;
 }
 
+// The O(nlogn) solution
 int countSubarraySumInRange(vector<int>::const_iterator ibegin, vector<int>::const_iterator iend, int lower, int upper, int& arrsum, int* &lsums, int* &rsums) {
   if (ibegin == iend) return 0;
   int arrsize = iend - ibegin;
