@@ -56,7 +56,6 @@ int Solution::lengthOfLongestSubstring(string s) {
   int len = s.length();
   if (len < 2) return len;
   else if (len == 2) return 1 + (s[0] != s[1]);
-  else if (len == 3) return 1 + (s[0] != s[1]) + (s[1] != s[2]) - ((s[0] == s[2]) && (s[0] != s[1]));
 
   bool taken[128];
   std::fill_n(taken, 128, 0);
@@ -85,16 +84,19 @@ int Solution::singleNumberi(vector<int>& nums) {
   int ans{0};
   for (auto it = nums.begin(), iend = nums.end(); it != iend; ++it)
     ans ^= *it;
+
   return ans;
 }
 
 vector<int> Solution::singleNumberiii(vector<int>& nums) {
   int dif(0), one(1), sig(0);
   auto ibegin = nums.begin(), iend = nums.end();
-  for (auto it = ibegin; it != iend; ++it) dif ^= *it;
+  for (auto it = ibegin; it != iend; ++it)
+    dif ^= *it;
   while (!(dif & one)) one <<= 1;
   for (auto it = ibegin; it != iend; ++it)
     if (*it & one) sig ^= *it;
+
   return vector<int>{sig, sig^dif};
 }
 
@@ -115,7 +117,7 @@ int main()
 
   vector<int> nums = {1, 2, 1, 3, 2, 5};
   vector<int> rslt = sol.singleNumberiii(nums);
-  cout << "The answer is: " << rslt[0] << ", " << rslt[1] << ((rslt.size() == 2)? "" : " bug!!") << endl;
+  cout << "The answer is: " << rslt[0] << ", " << rslt[1] << endl;
 
   return 0;
 }
