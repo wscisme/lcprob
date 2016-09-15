@@ -88,6 +88,19 @@ int Solution::singleNumberi(vector<int>& nums) {
   return ans;
 }
 
+int Solution::singleNumberii(vector<int>& nums) {
+  int bit1(0), bit2(0);
+  for (auto it = nums.begin(), iend = nums.end(); it != iend; ++it) {
+    int carr = *it & bit2;
+    bit2 ^= carr;               // bit2 &= ~carr;
+    carr ^= *it;
+    bit2 |= (carr & bit1);
+    bit1 ^= carr;
+  }
+
+  return bit1;
+}
+
 vector<int> Solution::singleNumberiii(vector<int>& nums) {
   int dif(0), one(1), sig(0);
   auto ibegin = nums.begin(), iend = nums.end();
