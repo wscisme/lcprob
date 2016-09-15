@@ -6,9 +6,18 @@ using namespace std;
 
 class Solution {
 public:
+  // https://leetcode.com/problems/find-the-difference/
   char findTheDifference(string s, string t);
+  // https://leetcode.com/problems/counting-bits/
   vector<int> countBits(int num);
+  // https://leetcode.com/problems/longest-substring-without-repeating-characters/
   int lengthOfLongestSubstring(string s);
+  // https://leetcode.com/problems/single-number/
+  int singleNumberi(vector<int>& nums);
+  // https://leetcode.com/problems/single-number-ii/
+  int singleNumberii(vector<int>& nums);
+  // https://leetcode.com/problems/single-number-iii/
+  vector<int> singleNumberiii(vector<int>& nums);
 };
 
 char Solution::findTheDifference(string s, string t) {
@@ -72,6 +81,23 @@ int Solution::lengthOfLongestSubstring(string s) {
   return maxcount;
 }
 
+int Solution::singleNumberi(vector<int>& nums) {
+  int ans{0};
+  for (auto it = nums.begin(), iend = nums.end(); it != iend; ++it)
+    ans ^= *it;
+  return ans;
+}
+
+vector<int> Solution::singleNumberiii(vector<int>& nums) {
+  int dif(0), one(1), sig(0);
+  auto ibegin = nums.begin(), iend = nums.end();
+  for (auto it = ibegin; it != iend; ++it) dif ^= *it;
+  while (!(dif & one)) one <<= 1;
+  for (auto it = ibegin; it != iend; ++it)
+    if (*it & one) sig ^= *it;
+  return vector<int>{sig, sig^dif};
+}
+
 int main()
 {
   // string s = "abcd";
@@ -84,8 +110,12 @@ int main()
 
   // cout << sol.findTheDifference(s, t) << endl;
   // cout << (sol.countBits(5)).size() << endl;
-  cout << sol.lengthOfLongestSubstring(s) << endl;
-  cout << sol.lengthOfLongestSubstring(t) << endl;
+  // cout << sol.lengthOfLongestSubstring(s) << endl;
+  // cout << sol.lengthOfLongestSubstring(t) << endl;
+
+  vector<int> nums = {1, 2, 1, 3, 2, 5};
+  vector<int> rslt = sol.singleNumberiii(nums);
+  cout << "The answer is: " << rslt[0] << ", " << rslt[1] << ((rslt.size() == 2)? "" : " bug!!") << endl;
 
   return 0;
 }
