@@ -18,6 +18,8 @@ class Solution {
   int singleNumberii(vector<int>& nums);
   // https://leetcode.com/problems/single-number-iii/
   vector<int> singleNumberiii(vector<int>& nums);
+  // https://leetcode.com/problems/jump-game/
+  bool canJump(vector<int>& nums);
   // https://leetcode.com/problems/jump-game-ii/
   int jump(vector<int>& nums);
 };
@@ -113,6 +115,17 @@ vector<int> Solution::singleNumberiii(vector<int>& nums) {
     if (*it & one) sig ^= *it;
 
   return vector<int>{sig, sig^dif};
+}
+
+bool Solution::canJump(vector<int>& nums) {
+  int max_reach(0);
+  for (int i = 0, end = nums.size() - 1; i <= max_reach; ++i) {
+    max_reach = max(max_reach, i + nums[i]);
+    if (max_reach >= end)
+      return true;
+  }
+
+  return false;
 }
 
 int Solution::jump(vector<int>& nums) {
