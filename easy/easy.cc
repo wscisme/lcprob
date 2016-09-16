@@ -18,6 +18,8 @@ class Solution {
   int singleNumberii(vector<int>& nums);
   // https://leetcode.com/problems/single-number-iii/
   vector<int> singleNumberiii(vector<int>& nums);
+  // https://leetcode.com/problems/jump-game-ii/
+  int jump(vector<int>& nums);
 };
 
 char Solution::findTheDifference(string s, string t) {
@@ -111,6 +113,19 @@ vector<int> Solution::singleNumberiii(vector<int>& nums) {
     if (*it & one) sig ^= *it;
 
   return vector<int>{sig, sig^dif};
+}
+
+int Solution::jump(vector<int>& nums) {
+  int max_reach(0), current_reach(-1), n_jump(0);
+  for (int i = 0, end = nums.size() - 1; max_reach < end; ++i) {
+    if (i > current_reach) {
+      current_reach = max_reach;
+      ++n_jump;
+    }
+    max_reach = max(max_reach, i + nums[i]);
+  }
+
+  return n_jump;
 }
 
 int main()
