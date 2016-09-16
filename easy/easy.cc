@@ -5,7 +5,7 @@
 using namespace std;
 
 class Solution {
-public:
+ public:
   // https://leetcode.com/problems/find-the-difference/
   char findTheDifference(string s, string t);
   // https://leetcode.com/problems/counting-bits/
@@ -106,7 +106,7 @@ vector<int> Solution::singleNumberiii(vector<int>& nums) {
   auto ibegin = nums.begin(), iend = nums.end();
   for (auto it = ibegin; it != iend; ++it)
     dif ^= *it;
-  while (!(dif & one)) one <<= 1;
+  one <<= __builtin_ctz(dif);    // while (!(dif & one)) one <<= 1;
   for (auto it = ibegin; it != iend; ++it)
     if (*it & one) sig ^= *it;
 
