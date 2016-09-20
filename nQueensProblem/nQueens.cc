@@ -8,13 +8,13 @@ using namespace std;
 class Solution {
  public:
   // https://leetcode.com/problems/n-queens/
-  vector< vector<string> > solveNQueens(int n);
+  vector<vector<string>> solveNQueens(int n);
   // https://leetcode.com/problems/n-queens-ii/
   int totalNQueens(int n);
 };
 
-vector< vector<string> > Solution::solveNQueens(int n) {
-  vector< vector<string> > solutions;
+vector<vector<string>> Solution::solveNQueens(int n) {
+  vector<vector<string>> solutions;
   if (n < 4) {
     if (n < 1) cout << "Invalid value. Please input with N > 0." << endl;
     else if (n == 1) solutions.push_back(vector<string>{"Q"});
@@ -141,7 +141,7 @@ int main()
   int difs{0};
 
   Solution s;
-  vector< vector<string> > solution;
+  vector<vector<string>> solution;
   for (int n = 0; n < 7; ++n) {
     solution = s.solveNQueens(n);
     cout << "The total posibilities for n = " << n << " is: " << solution.size() << endl;

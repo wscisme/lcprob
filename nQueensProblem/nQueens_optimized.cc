@@ -127,7 +127,7 @@ int main()
   int difs{0};
 
   Solution s;
-  vector< vector<string> > solution;
+  vector<vector<string>> solution;
   for (int n = 5; n < 6; ++n) {
     solution = s.solveNQueens(n);
     cout << "The total posibilities for n = " << n << " is: " << solution.size() << endl;
