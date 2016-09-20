@@ -10,6 +10,10 @@ public:
   ListNode* removeNthFromEnd(ListNode* head, int n);
   // https://leetcode.com/problems/remove-linked-list-elements/
   ListNode* removeElements(ListNode* head, int val);
+  // https://leetcode.com/problems/reverse-linked-list/
+  ListNode* reverseList(ListNode* head);
+  // https://leetcode.com/problems/palindrome-linked-list/
+  bool isPalindrome(ListNode* head);
 };
 
 ListNode* Solution::removeNthFromEnd(ListNode* head, int n) {
@@ -24,7 +28,6 @@ ListNode* Solution::removeNthFromEnd(ListNode* head, int n) {
   temp = prev->next->next;
   delete prev->next;
   prev->next = temp;
-
   return head;
 }
 
@@ -49,3 +52,34 @@ ListNode* Solution::removeElements(ListNode* head, int val) {
   return head;
 }
 
+ListNode* Solution::reverseList(ListNode* head) {
+  if (head == nullptr) return nullptr;
+  ListNode* node = head->next;
+  head->next = nullptr;
+  while (node) {
+    ListNode* temp = node->next;
+    node->next = head;
+    head = node;
+    node = temp;
+  }
+  return head;
+}
+
+
+// We want an algorithm with O(n) time and O(1) space
+bool Solution::isPalindrome(ListNode* head) {
+  if (head == nullptr) return true;
+  // ListNode* node1 = head;
+  // ListNode* node2 = head->next;
+  // long addrs = (long)head;
+  // while (node->next) {
+  //   node = node->next;
+  //   addrs ^= (long)node;
+  // }
+  // while (addrs != (long)head) {
+  //   if (node->val != head->val) return false;
+  //   node = (ListNode*)(addrs ^ (long)node);
+  //   head = head->next;
+  // }
+  return true;
+}
