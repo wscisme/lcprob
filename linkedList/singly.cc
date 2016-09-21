@@ -28,6 +28,7 @@ ListNode* Solution::removeNthFromEnd(ListNode* head, int n) {
   temp = prev->next->next;
   delete prev->next;
   prev->next = temp;
+
   return head;
 }
 
@@ -68,18 +69,29 @@ ListNode* Solution::reverseList(ListNode* head) {
 
 // We want an algorithm with O(n) time and O(1) space
 bool Solution::isPalindrome(ListNode* head) {
-  if (head == nullptr) return true;
-  // ListNode* node1 = head;
-  // ListNode* node2 = head->next;
-  // long addrs = (long)head;
-  // while (node->next) {
-  //   node = node->next;
-  //   addrs ^= (long)node;
-  // }
-  // while (addrs != (long)head) {
-  //   if (node->val != head->val) return false;
-  //   node = (ListNode*)(addrs ^ (long)node);
-  //   head = head->next;
-  // }
-  return true;
+  if (head == nullptr || head->next == nullptr) return true;
+  if (head->next->next == nullptr) return head->val == head->next->val;
+  ListNode* fastptr(head), slowptr(head->next), revptr(head);
+  while (fastptr->next->next->next) { // need to be fixed
+    fastptr = fastptr->next->next;
+    ListNode* temp = slowptr->next;
+    slowptr->next = revptr;
+    revptr = slowptr;
+    slowptr = temp;
+  }
+  bool is_palindrome = true;
+  ListNode* revlag = slowptr;
+  if (fastptr->next->next) {
+    is_palindrome = slowptr->val == slowptr->next->val;
+    slowptr = slowptr->next->next;
+  }
+  while (revptr != head) {
+    ListNode* temp = revptr->next;
+    revptr->next = revlag;
+    revlog = revptr;
+    revptr = temp;
+  
+  }
+
+  return is_palindrome;
 }
